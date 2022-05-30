@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "add-actif-client-side-solution",
+    "id": "32e02200-3bc2-46a3-b749-004f17a3b815",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.14.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "add-actif description"
+      },
+      "longDescription": {
+        "default": "add-actif description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "add-actif Feature",
+        "description": "The feature that activates elements of the add-actif solution.",
+        "id": "1d7c1c0c-bd56-4233-a99a-0c3a7bddebc8",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/add-actif.sppkg"
+  }
+}

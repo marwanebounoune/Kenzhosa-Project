@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "add-actif",
+    "libraryId": "32e02200-3bc2-46a3-b749-004f17a3b815",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "add-actif",
+    "solutionShortDescription": "add-actif description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
