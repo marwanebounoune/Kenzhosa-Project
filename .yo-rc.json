@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "display-actif",
+    "libraryId": "e6277ddb-aee0-4f26-9275-bc0f73b4ff60",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "DisplayActif",
+    "solutionShortDescription": "DisplayActif description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
