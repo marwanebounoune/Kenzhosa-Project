@@ -1,0 +1,29 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/core-build/serve.schema.json",
+    "port": 4321,
+    "https": true,
+    "serveConfigurations": {
+        "default": {
+            "pageUrl": "https://agroupma.sharepoint.com/sites/Kenzhosa",
+            "customActions": {
+                "01a72e62-db01-499e-97cc-b7f715821093": {
+                    "location": "ClientSideExtension.ApplicationCustomizer",
+                    "properties": {
+                        "cssurl": "https://agroupma.sharepoint.com/sites/Kenzhosa/SiteAssets/InjectionCss.css"
+                    }
+                }
+            }
+        },
+        "kenzhosaCss": {
+            "pageUrl": "https://agroupma.sharepoint.com/sites/Kenzhosa",
+            "customActions": {
+                "01a72e62-db01-499e-97cc-b7f715821093": {
+                    "location": "ClientSideExtension.ApplicationCustomizer",
+                    "properties": {
+                        "cssurl": "https://agroupma.sharepoint.com/sites/Kenzhosa/SiteAssets/InjectionCss.css"
+                    }
+                }
+            }
+        }
+    }
+}

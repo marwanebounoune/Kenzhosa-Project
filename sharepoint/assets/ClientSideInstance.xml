@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+    <ClientSideComponentInstance
+        Title="KenzhosaCss"
+        Location="ClientSideExtension.ApplicationCustomizer"
+        ComponentId="01a72e62-db01-499e-97cc-b7f715821093"
+        Properties="{&quot;testMessage&quot;:&quot;Test message&quot;}">
+    </ClientSideComponentInstance>
+</Elements>

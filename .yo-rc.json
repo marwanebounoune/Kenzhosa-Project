@@ -1,0 +1,17 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "kenzhosa-css",
+    "libraryId": "86a935c3-f3c0-476e-a5de-83a6c1dc0b90",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "Kenzhosa-Css",
+    "solutionShortDescription": "Kenzhosa-Css description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "extension",
+    "extensionType": "ApplicationCustomizer"
+  }
+}
