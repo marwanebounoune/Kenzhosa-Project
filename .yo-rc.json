@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "map-kenzhosa",
+    "libraryId": "2a8caf25-d11b-4f8e-91ef-07bf71c99331",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "map-kenzhosa",
+    "solutionShortDescription": "map-kenzhosa description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

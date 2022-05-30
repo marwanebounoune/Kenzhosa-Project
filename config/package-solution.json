@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "map-kenzhosa-client-side-solution",
+    "id": "2a8caf25-d11b-4f8e-91ef-07bf71c99331",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.14.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "map-kenzhosa description"
+      },
+      "longDescription": {
+        "default": "map-kenzhosa description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "map-kenzhosa Feature",
+        "description": "The feature that activates elements of the map-kenzhosa solution.",
+        "id": "86534be5-9f40-44e6-ac18-e7250c06be28",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/map-kenzhosa.sppkg"
+  }
+}
