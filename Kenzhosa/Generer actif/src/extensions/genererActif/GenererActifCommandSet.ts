@@ -41,7 +41,6 @@ export default class GenererActifCommandSet extends BaseListViewCommandSet<IGene
   @override
   public onExecute(event: IListViewCommandSetExecuteEventParameters): void {
     let id_contrat:number = event.selectedRows[0].getValueByName("ID");
-    console.log("HELLO")
     let referenceContrat:string = event.selectedRows[0].getValueByName("R_x00e9_f_x00e9_rence");
     switch (event.itemId) {
       case 'COMMAND_1':

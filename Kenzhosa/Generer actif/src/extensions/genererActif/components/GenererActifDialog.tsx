@@ -12,6 +12,7 @@ export default class GenererActifDialog extends BaseDialog {
     public nombre_dossier: number;
     public Statut: string;
     public id_contrat:number;
+    public LatLng:string;
     public constructor() {
         super();
 
@@ -35,19 +36,20 @@ export default class GenererActifDialog extends BaseDialog {
         ReactDOM.unmountComponentAtNode(this.domElement);
     }
     
-    private _submit = async (nombre_dossier: number, FolderPere:string) => {
+    private _submit = async (nombre_dossier: number, FolderPere:string, Lat:number, Lng:number) => {
         this.close();
+        this.LatLng = Lat+","+Lng;
         this.nombre_dossier = nombre_dossier;
         await sp.web.lists.getByTitle("Contrats").items.getById(this.id_contrat).get().then(res => {
             console.log("RES =>", res)
         })
         .then(async res=>{
             if(FolderPere === "Actifs simlpes"){
-                await createFolder(this.nombre_dossier, FolderPere, this.referenceContrat, this.id_contrat);
+                await createFolder(this.nombre_dossier, FolderPere, this.referenceContrat, this.id_contrat, this.LatLng);
                 Dialog.alert(`L'actif est généré avec succès.`);
             }
             else{
-                await createFolder(this.nombre_dossier, FolderPere, this.referenceContrat, this.id_contrat);
+                await createFolder(this.nombre_dossier, FolderPere, this.referenceContrat, this.id_contrat, this.LatLng);
                 Dialog.alert(`Les actifs sont générés avec succès.`);
             }
         }).catch(error => {

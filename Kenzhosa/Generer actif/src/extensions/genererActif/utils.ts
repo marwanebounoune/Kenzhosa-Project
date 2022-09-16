@@ -1,59 +1,46 @@
 import { sp } from "@pnp/sp/presets/all";
 import "@pnp/sp/folders";
-import { Dialog } from "@microsoft/sp-dialog";
-
 const relativeDestinationUrl:string = "/sites/Kenzhosa/"
 
-export async function createFolder(nombreSousDossier:number, FolderPere:string, referenceDevis:string, id_contrat:number){
-    const destinationUrl:string = FolderPere+"/"+referenceDevis;
+export async function createFolder(nombreSousDossier:number, FolderPere:string, referenceContrat:string, id_contrat:number, LatLng:string){
+    const destinationUrl:string = FolderPere+"/"+referenceContrat;
     let folderName:string = null;
     try{
+        console.log("Hello")
         const referenceFolderIsExist: boolean = await (await sp.web.getFolderByServerRelativePath(destinationUrl).get()).Exists;
         if(referenceFolderIsExist && FolderPere === "Grands actifs") {
             for(let index=0; index<nombreSousDossier; index++){
-                let folderName = relativeDestinationUrl+FolderPere+'/'+referenceDevis+'/'+referenceDevis+'-'+(index+1);
+                let folderName = relativeDestinationUrl+FolderPere+'/'+referenceContrat+'/'+referenceContrat+'-'+(index+1);
                 await createForlderPere(folderName, id_contrat);
             }
+        }
+        else if(referenceFolderIsExist && FolderPere === "Actifs simlpes") {
+            const contrat: any = await sp.web.lists.getByTitle("Contrats").items.getById(id_contrat).get();
+            console.log("contrat", contrat)
+            let newRefContrat = referenceContrat+" ("+contrat.Nombre_x0020_d_x0027_actifs+")"
+            await createActifSimple(folderName, destinationUrl, FolderPere, newRefContrat, id_contrat, LatLng)
+            await sp.web.lists.getByTitle("Contrats").items.getById(id_contrat).update({
+                Nombre_x0020_d_x0027_actifs: contrat.Nombre_x0020_d_x0027_actifs+1,
+                En_x0020_vente: contrat.En_x0020_vente
+            })
         }
     }catch{
         if(FolderPere === "Grands actifs") {
-            folderName = relativeDestinationUrl+FolderPere+'/'+referenceDevis;
-            await createForlderPere(folderName, id_contrat);
-            for(let index=0; index<nombreSousDossier; index++){
-                folderName = relativeDestinationUrl+FolderPere+'/'+referenceDevis+'/'+referenceDevis+' - A'+(index+1);
-                var folderName2 = folderName+'/Documents '+referenceDevis+' - A'+(index+1);
-                var folderName3 = folderName+'/Photos '+referenceDevis+' - A'+(index+1);
-                var folderName4 = folderName+'/Dossier des annonces '+referenceDevis+' - A'+(index+1);
-                await createForlderPere(folderName, id_contrat);
-                await createForlder(folderName2);
-                await createForlder(folderName3);
-                await createForlder(folderName4);
-                await _createExcelSuiviCommercial(referenceDevis, "Grands%20actifs/", folderName)
-                await _createExcelSuiviMarketing(referenceDevis, "Grands%20actifs/", folderName)
-                console.log("folderName", folderName)
-            }
+            await createDrandsActifs(folderName, destinationUrl, FolderPere, referenceContrat, id_contrat, LatLng, nombreSousDossier)
         }
-        else if(FolderPere === "Actifs simlpes") {
-            folderName = relativeDestinationUrl+FolderPere+'/'+referenceDevis;
-            var folderName2 = folderName+'/Documents - '+referenceDevis;
-            var folderName3 = folderName+'/Photos - '+referenceDevis;
-            var folderName4 = folderName+'/Dossier des annonces - '+referenceDevis;
-            await createForlderPere(folderName, id_contrat);
-            await createForlder(folderName2);
-            await createForlder(folderName3);
-            await createForlder(folderName4);
-            await _createExcelSuiviCommercial(referenceDevis, "Actifs%20simlpes", folderName)
-            await _createExcelSuiviMarketing(referenceDevis, "Grands%20actifs/", folderName)
-            console.log("folderName", folderName)
+        else if(FolderPere === "Actifs simlpes"){
+            console.log("Hello 2")
+            await createActifSimple(folderName, destinationUrl, FolderPere, referenceContrat, id_contrat, LatLng)
         }
     }
 }
-export async function createForlder(folderName:string){
+async function createForlder(folderName:string){
     await sp.web.folders.add(folderName);
 }
-export async function createForlderPere(folderName:string, id_contrat:any){
-    //console.log("folderName", folderName);
-    await sp.web.folders.add(folderName);
+async function createForlderPere(folderName:string, id_contrat:any){
+    await sp.web.folders.add(folderName).then(res => {
+        console.log("res->", res)
+    });
     const folder: any = await sp.web.getFolderByServerRelativePath(folderName).getItem();
     const contrat: any = await sp.web.lists.getByTitle("Contrats").items.getById(id_contrat).get();
     console.log("folder", folder.get())
@@ -66,42 +53,8 @@ export async function createForlderPere(folderName:string, id_contrat:any){
         Statut_x0020_d_x0027_actif: "En cours de vente"
     });
 }
-export  const generateCodeFacture = () => {
-    const date = new Date();                    //yymmddhhmm
-    let code: any = 22*Math.pow(10, 8);         //22=2022
-    code += (date.getMonth()+1)*Math.pow(10, 6);//mois*10^6
-    code += date.getDate()*Math.pow(10, 4);     //jour*10^4
-    code += date.getHours()*Math.pow(10, 2);
-    code += date.getMinutes();
-    const finale_code = code*75937;
-    return finale_code;
-}
-export function getFormattedDate(date) {
-    let year = date.getFullYear();
-    let month = (1 + date.getMonth()).toString().padStart(2, '0');
-    let day = date.getDate().toString().padStart(2, '0');
-    return day + '/' + month + '/' + year;
-}
-export async function getSocieteClientInfo(SocieteId:number):Promise<any>{
-    //console.log("SocieteId", SocieteId);
-    let societe:any = await sp.web.lists.getByTitle("Entreprises").items.getById(SocieteId).get();
-    //console.log("societe", societe.WorkAddress);
-    return societe;
-}
-export async function getClientInfo(clientId:number):Promise<any>{
-    //console.log("clientId", clientId);
-    let client:any = await sp.web.lists.getByTitle("Clients").items.getById(clientId).get();
-    //console.log("client", client);
-    return client;
-}
-export async function getVilleInfo(VilleId:number):Promise<any>{
-    //console.log("VilleId", VilleId);
-    let ville:any = await sp.web.lists.getByTitle("l_villes").items.getById(VilleId).get();
-    //console.log("ville", ville);
-    return ville;
-}
-export async function _createExcelSuiviCommercial(referenceDevis:string, TypeActif:string, folderName:string){
-    const fileName:string = "Suivi Commercial - "+referenceDevis+".xlsx";
+async function _createExcelSuiviCommercial(referenceContrat:string, TypeActif:string, folderName:string){
+    const fileName:string = "Suivi Commercial - "+referenceContrat+".xlsx";
     const templateUrl = "/sites/Kenzhosa/"+TypeActif+"/Forms/SuiviCommercial/SuiviCommercialModel.xlsx";
     await sp.web.getFileByServerRelativeUrl(templateUrl).getBuffer()
     .then(templateData => {
@@ -117,8 +70,8 @@ export async function _createExcelSuiviCommercial(referenceDevis:string, TypeAct
         });
     });
 }
-export async function _createExcelSuiviMarketing(referenceDevis:string, TypeActif:string, folderName:string){
-    const fileName:string = "Suivi Marketing - "+referenceDevis+".xlsx";
+async function _createExcelSuiviMarketing(referenceContrat:string, TypeActif:string, folderName:string){
+    const fileName:string = "Suivi Marketing - "+referenceContrat+".xlsx";
     const templateUrl = "/sites/Kenzhosa/"+TypeActif+"/Forms/SuiviMarketing/SuiviMarketingModel.xlsx";
     await sp.web.getFileByServerRelativeUrl(templateUrl).getBuffer()
     .then(templateData => {
@@ -134,3 +87,52 @@ export async function _createExcelSuiviMarketing(referenceDevis:string, TypeActi
         });
     });
 }
+async function createActifListing(idContrat:number, LatLng:string, folderName:string, refernceActif:string){
+    const contrat: any = await sp.web.lists.getByTitle("Contrats").items.getById(idContrat).get();
+    console.log("contrat->",contrat)
+    const listing: any = await sp.web.lists.getByTitle("Listing").items.getAll();
+    console.log("listing->",listing)
+    await sp.web.lists.getByTitle("Listing").items.add({
+        Title: refernceActif,
+        Montant_x0020_commercialisation: contrat.Montant_x0020_commercialisation,
+        LatitudeLongitude: LatLng,
+        Voir_x0020_plus: {
+            Description:"Voir plus ...",
+            Url: "https://agroupma.sharepoint.com"+folderName
+        }
+    })
+}
+async function createActifSimple(folderName:string, destinationUrl:string, FolderPere:string, referenceContrat:string, id_contrat:number, LatLng:string){
+    folderName = relativeDestinationUrl+FolderPere+'/'+referenceContrat;
+    var folderName2 = folderName+'/Documents - '+referenceContrat;
+    var folderName3 = folderName+'/Photos - '+referenceContrat;
+    var folderName4 = folderName+'/Dossier des annonces - '+referenceContrat;
+    await createForlderPere(folderName, id_contrat);
+    console.log("relativeDestinationUrl", relativeDestinationUrl)
+    await createForlder(folderName2);
+    await createForlder(folderName3);
+    await createForlder(folderName4);
+    await _createExcelSuiviCommercial(referenceContrat, "Actifs%20simlpes", folderName)
+    await _createExcelSuiviMarketing(referenceContrat, "Actifs%20simlpes", folderName)
+    await createActifListing(id_contrat, LatLng, folderName, referenceContrat)
+    console.log("folderName", folderName)
+}
+async function createDrandsActifs(folderName:string, destinationUrl:string, FolderPere:string, referenceContrat:string, id_contrat:number, LatLng:string, nombreSousDossier:number){
+    folderName = relativeDestinationUrl+FolderPere+'/'+referenceContrat;
+    await createForlderPere(folderName, id_contrat);
+    await createActifListing(id_contrat, LatLng, folderName, referenceContrat)
+    for(let index=0; index<nombreSousDossier; index++){
+        folderName = relativeDestinationUrl+FolderPere+'/'+referenceContrat+'/'+referenceContrat+' - A'+(index+1);
+        var folderName2 = folderName+'/Documents '+referenceContrat+' - A'+(index+1);
+        var folderName3 = folderName+'/Photos '+referenceContrat+' - A'+(index+1);
+        var folderName4 = folderName+'/Dossier des annonces '+referenceContrat+' - A'+(index+1);
+        await createForlderPere(folderName, id_contrat);
+        await createForlder(folderName2);
+        await createForlder(folderName3);
+        await createForlder(folderName4);
+        await _createExcelSuiviCommercial(referenceContrat, "Grands%20actifs", folderName)
+        await _createExcelSuiviMarketing(referenceContrat, "Grands%20actifs", folderName)
+        console.log("folderName", folderName)
+    }
+}
+

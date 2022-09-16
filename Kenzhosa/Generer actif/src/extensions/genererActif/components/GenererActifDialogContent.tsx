@@ -25,10 +25,15 @@ var dialogContentProps = {
     title: 'Alert',
     subText: 'Veuillez Spécifier les informations demandées (le nombre de sous-dossiers et le dossier de destination)',
 };
-export default class GenererActifDialogContent extends React.Component<IGenererActifDialogContentProps, {alert:boolean, nbr_dossier:number, FolderPere:string, 
+export default class GenererActifDialogContent extends React.Component<IGenererActifDialogContentProps, {
+    alert:boolean, 
+    nbr_dossier:number, 
+    FolderPere:string, 
     showCustomisedAnimatedDialo:boolean,
     showSuccessDialog:boolean,
-    showErrorDialog:boolean}> {
+    showErrorDialog:boolean
+    Lat:number, 
+    Lng:number, }> {
 
     constructor(props) {
         super(props);
@@ -38,7 +43,9 @@ export default class GenererActifDialogContent extends React.Component<IGenererA
             FolderPere:"",
             showCustomisedAnimatedDialo:false,
             showSuccessDialog:false,
-            showErrorDialog:false
+            showErrorDialog:false,
+            Lat:0,
+            Lng:0
         }
     }
     public render(): JSX.Element {
@@ -58,7 +65,40 @@ export default class GenererActifDialogContent extends React.Component<IGenererA
             <DialogContent title='Veuillez-remplir les informations' subText={this.props.message} onDismiss={this.props.close} showCloseButton={true}>
                 <Dropdown onChange={this.onChange_nbr_dossier} placeholder="Selectionner un type*" label="Selectionner un type*" options={options_folder} styles={dropdownStyles} defaultSelectedKey={this.state.FolderPere}/>
                 {this.state.FolderPere === "Grands actifs" ?
-                <TextField label="Nombre d(es)'actif(s)*" placeholder="Entrez le nombre d(es)'actif(s)*" onChange={(e) => this.setState({nbr_dossier:parseInt((e.target as HTMLInputElement).value)}) }/>
+                    <>
+                        <TextField 
+                            inputProps={{min: 0, style: { textAlign: 'center'}}} 
+                            label="Nombre d(es)'actif(s)*" placeholder="Entrez le nombre d(es)'actif(s)*" 
+                            onChange={(e) => this.setState({nbr_dossier:parseInt((e.target as HTMLInputElement).value)}) }
+                        />
+                        <br/><br/>
+                        <TextField 
+                            inputProps={{min: 0, style: { textAlign: 'center'}}} 
+                            label="Latitude*" placeholder="Entrez la Latitude*" 
+                            onChange={(e) => this.setState({Lat:parseFloat((e.target as HTMLInputElement).value)}) }
+                        />
+                        <br/><br/>
+                        <TextField 
+                            inputProps={{min: 0, style: { textAlign: 'center'}}} 
+                            label="Longitude*" placeholder="Entrez la Longitude*" 
+                            onChange={(e) => this.setState({Lng:parseFloat((e.target as HTMLInputElement).value)}) }
+                        />
+                    </>
+                :<></>}
+                {this.state.FolderPere === "Actifs simlpes" ?
+                    <>
+                        <TextField 
+                            inputProps={{min: 0, style: { textAlign: 'center'}}} 
+                            label="Latitude*" placeholder="Entrez la Latitude*" 
+                            onChange={(e) => this.setState({Lat:parseFloat((e.target as HTMLInputElement).value)}) }
+                        />
+                        <br/><br/>
+                        <TextField 
+                            inputProps={{min: 0, style: { textAlign: 'center'}}} 
+                            label="Longitude*" placeholder="Entrez la Longitude*" 
+                            onChange={(e) => this.setState({Lng:parseFloat((e.target as HTMLInputElement).value)}) }
+                        />
+                    </>
                 :<></>}
                 <DialogFooter>
                     <DefaultButton text='Cancel' title='Cancel' onClick={this.props.close} />
@@ -71,11 +111,21 @@ export default class GenererActifDialogContent extends React.Component<IGenererA
         await this.setState({FolderPere:item.key.toString()});
     };
     private check_and_submit_data(){
-        if (this.state.FolderPere === "" || this.state.FolderPere === "Grands actifs" && (this.state.nbr_dossier === 0 || isNaN(this.state.nbr_dossier))){
+        if (this.state.FolderPere === "" 
+            || this.state.FolderPere === "Grands actifs" && (
+                this.state.nbr_dossier === 0 || isNaN(this.state.nbr_dossier) 
+                || this.state.Lat === 0 || isNaN(this.state.Lat) 
+                || this.state.Lng === 0 || isNaN(this.state.Lng)
+            )
+            || this.state.FolderPere === "Actifs simlpes" && (
+                this.state.Lat === 0 || isNaN(this.state.Lat) 
+                || this.state.Lng === 0 || isNaN(this.state.Lng)
+            )
+        ){
             this.setState({alert:true})
         }
         else{
-            this.props.submit(this.state.nbr_dossier, this.state.FolderPere);
+            this.props.submit(this.state.nbr_dossier, this.state.FolderPere, this.state.Lat, this.state.Lng);
         }
     }
 }
